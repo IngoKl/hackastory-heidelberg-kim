@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">KIM</string>
+    <string name="genre_science">Science</string>
+    <string name="genre_sports">Sports</string>
+    <string name="genre_entertainment">Entertainment</string>
+    <string name="genre_politics">Politics</string>
+    <string name="title_activity_article">ArticleActivity</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="api_key">AIzaSyBnkLq4NXhxiClzPZBgOi7aw0rV4gEz0mc</string>
+</resources>

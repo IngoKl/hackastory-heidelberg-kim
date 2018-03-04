@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/politics"
+        android:icon="@drawable/ic_home_black_24dp"
+        android:title="@string/genre_politics" />
+
+    <item
+        android:id="@+id/sports"
+        android:icon="@drawable/ic_directions_bike_black_24dp"
+        android:title="@string/genre_sports" />
+
+    <item
+        android:id="@+id/entertainment"
+        android:icon="@drawable/ic_whatshot_black_24dp"
+        android:title="@string/genre_entertainment" />
+    <item
+        android:id="@+id/science"
+        android:icon="@drawable/ic_school_black_24dp"
+        android:title="@string/genre_science" />
+</menu>
