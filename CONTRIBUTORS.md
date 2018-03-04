@@ -1,5 +1,5 @@
-Ingo Kleiber
-Leon Erath
-Markus Reichert
-Sabine Kettner
-Shubha Murthy
+* Ingo Kleiber
+* Leon Erath
+* Markus Reichert
+* Sabine Kettner
+* Shubha Murthy
