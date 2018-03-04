@@ -24,7 +24,7 @@ function initMap() {
     var articlejson;
 	$(document).ready(function(){
         $.getJSON("http://10.52.1.114:8080/api/article/full_list", function(json){
-            articlejson = json
+            let articlejson = json
             console.log(articlejson)
             setMarkers(map, articlejson)
         });
@@ -59,27 +59,46 @@ function setMarkers(map, articlejson) {
     type: 'poly'
   };
   for (var i = 0; i < articlejson.length; i++) {
-    var beach = articlejson[i];
-    var marker = new google.maps.Marker({
+    let beach = articlejson[i];
+    let marker = new google.maps.Marker({
       position: {lat: beach.lat, lng: beach.lng},
       map: map,
       icon: image,
       shape: shape,
-      url: "story.php?storyid="+Number(articlejson[i].id)
+      url: beach.id
     });
     google.maps.event.addListener(marker, 'click', function() {
-    window.location.href = this.url;
-});
+    	$("#startmap").css("display","none");
+    	addcontent(marker.url, articlejson)
+    	$("#story").css("display","block");
+    
+	});
   }
 }
 
 
 // STORY
-/*
+function addcontent(storyid,jsonarticle){
+  document.getElementById("headline").innerHTML = jsonarticle[storyid-1].headline
+  document.getElementById("abstract").innerHTML = jsonarticle[storyid-1].abstract
+  for (i=0;i<jsonarticle[storyid-1].content.length;i++){
+    if(jsonarticle[storyid-1].content[i][0] = "img"){
+      document.getElementById("content").innerHTML += '<img class="cont" src='+jsonarticle[storyid-1].content[i][1].toString()+'>'
+    }
+    else if(jsonarticle[storyid-1].content[i][0] = "video"){
+      document.getElementById("content").innerHTML += '<embed class="cont" src='+jsonarticle[storyid-1].content[i][1].toString()+'>'
+    }
+    else{
+    document.getElementById("content").innerHTML += '<div class="cont">'+jsonarticle[storyid-1].content[i][1].toString()+'</div>'
+    }
+  }
+}
 
-*/
-
-
+function returntomap(){
+	$("#startmap").css("display","block");
+    document.getElementById("content").innerHTML = ""
+    $("#story").css("display","none");
+}
 
 
 

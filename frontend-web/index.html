@@ -11,6 +11,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
   </head>
   <body>
+  <div id="startmap">
     <div class="col-sm-12">
       <h1>Click on a subject!</h1>
     </div>
@@ -25,12 +26,27 @@
       <div class="subjects" id="sports"></div>
       <div class="subjects" id="entertainment"></div>
     </div>
+</div>
+    <div id="story">
+      <div class="col-sm-12">
+      <h1 id='headline'></h1>
+    </div>
+    <br>
+    <div class="flexcont">
 
+      <div id="abstract"></div>
+      <br>
+    
+      <div id="content"></div>
 
+    </div>
+    <button onclick="returntomap()">Return to map</button>
+    </div>
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
     <script type="text/javascript" src="mapscript.js"></script>
+
     <script async defer
     src="https://maps.googleapis.com/maps/api/js?key=AIzaSyD5ijBHzT2lEcT4D0NbV1yvyJFTIVEaF3c&callback=initMap">
     </script>

@@ -33,6 +33,6 @@ body{
 	background-color: #87b5ff;
 }
 
-.flexcont{
-	
+.cont{
+	max-width: 75%
 }
