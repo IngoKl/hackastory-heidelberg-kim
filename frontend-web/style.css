@@ -1,0 +1,38 @@
+
+
+h1{
+	text-align: center;
+}
+
+#wmap{
+	width: 100%
+}
+
+#map {
+        height: 400px;
+        width: 100%;
+       }
+
+.subjects{
+	width: 50px;
+	height: 50px;
+	background-color: red;
+	float: left;
+	margin: 20px;
+}
+
+
+#subj{
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+	justify-content: center;
+}
+
+body{
+	background-color: #87b5ff;
+}
+
+.flexcont{
+	
+}
