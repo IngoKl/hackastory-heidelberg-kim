@@ -1,13 +1,29 @@
 package com.example.leonerath.kim.fragments
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.volley.Request
+import com.android.volley.RequestQueue
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.leonerath.kim.R
+import com.example.leonerath.kim.activities.ArticleActivity
+import com.example.leonerath.kim.activities.SolutionActivity
+import com.example.leonerath.kim.models.Article
+import com.example.leonerath.kim.models.Quiz
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.fragment_quiz.*
+import kotlinx.android.synthetic.main.fragment_quiz.view.*
 
 
 /**
@@ -20,83 +36,181 @@ import com.example.leonerath.kim.R
  */
 class QuizFragment : Fragment() {
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
 
-    private var mListener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        val rootView = inflater!!.inflate(R.layout.fragment_quiz, container, false)
+
+        val id = arguments.getInt("id",0)
+
+        if (id != 0){
+            loadData(id)
+
+        var wrong = 0
+
+        rootView.button1.setOnClickListener {
+            if (quiz!= null){
+                if (quiz!!.answers.get(0).get(1) == "true"){
+                    button1.setBackgroundColor(Color.GREEN)
+
+                    val intent = Intent(context, SolutionActivity::class.java).apply {
+                        putExtra("id", id)
+                        putExtra("score", wrong)
+                    }
+                    startActivity(intent)
+                    activity.finish()
+                }else{
+                    button1.setBackgroundColor(Color.RED)
+                    wrong++
+                }
+            }
+
+
+
+        }
+        rootView.button2.setOnClickListener {
+            if (quiz!= null) {
+                if (quiz!!.answers.get(1).get(1) == "true") {
+                    button2.setBackgroundColor(Color.GREEN)
+
+                    val intent = Intent(context, SolutionActivity::class.java).apply {
+                        putExtra("id", id)
+                        putExtra("score", wrong)
+                    }
+                    startActivity(intent)
+                    activity.finish()
+                } else {
+                    button2.setBackgroundColor(Color.RED)
+                    wrong++
+                }
+            }
+
+        }
+        rootView.button3.setOnClickListener {
+            if (quiz!= null) {
+                if (quiz!!.answers.get(2).get(1) == "true") {
+                    button3.setBackgroundColor(Color.GREEN)
+
+                    val intent = Intent(context, SolutionActivity::class.java).apply {
+                        putExtra("id", id)
+                        putExtra("score", wrong)
+                    }
+                    startActivity(intent)
+                    activity.finish()
+                } else {
+                    button3.setBackgroundColor(Color.RED)
+                    wrong++
+                }
+            }
+
+        }
+        rootView.button4.setOnClickListener {
+            if (quiz!= null) {
+                if (quiz!!.answers.get(3).get(1) == "true") {
+                    button4.setBackgroundColor(Color.GREEN)
+
+                    val intent = Intent(context, SolutionActivity::class.java).apply {
+                        putExtra("id", id)
+                        putExtra("score", wrong)
+                    }
+                    startActivity(intent)
+                    activity.finish()
+                } else {
+                    button4.setBackgroundColor(Color.RED)
+                    wrong++
+                }
+            }
+
+        }
+
+        }
+
+
         // Inflate the layout for this fragment
-        return inflater!!.inflate(R.layout.fragment_quiz, container, false)
+        return rootView
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
+    var quiz: Quiz ?= null
+
+    lateinit var queue :RequestQueue
+    private fun loadData(id: Int) {
+
+
+        val gson = Gson()
+        // Instantiate the RequestQueue.
+        queue = Volley.newRequestQueue(activity)
+
+        val url = "http://10.52.1.114:8080/api/article/"+id
+
+
+        val stringRequest = StringRequest(Request.Method.GET, url,
+                object : Response.Listener<String> {
+                    override fun onResponse(response: String) {
+                        Log.v("QuizFragment",response)
+
+                        var article = gson.fromJson(response, Article::class.java)
+
+                        loadQuitData("http://10.52.1.114:8080/api/quiz/"+article.quiz_id)
+
+
+
+                    }
+                }, object : Response.ErrorListener {
+            override fun onErrorResponse(error: VolleyError) {
+                Log.v("MainActivity","Could not load Data")
+            }
+        })
+
+
+
+
+
+
+
+        queue.add(stringRequest)
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
+
+    fun loadQuitData(url: String){
+        val gson = Gson()
+
+        val stringRequest = StringRequest(Request.Method.GET, url,
+                object : Response.Listener<String> {
+                    override fun onResponse(response: String) {
+                        Log.v("QuizFragment",response)
+
+                        quiz = gson.fromJson(response, Quiz::class.java)
+                        showArticle(quiz!!)
+                    }
+                }, object : Response.ErrorListener {
+            override fun onErrorResponse(error: VolleyError) {
+                Log.v("MainActivity","Could not load Data")
+            }
+        })
+
+
+
+        queue.add(stringRequest)
+
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
+    private fun showArticle(quiz: Quiz) {
+        textViewQuestion.text = quiz.question
+
+        button1.text = quiz.answers.get(0).get(0)
+        button2.text = quiz.answers.get(1).get(0)
+        button3.text = quiz.answers.get(2).get(0)
+        button4.text = quiz.answers.get(3).get(0)
+
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
 
-    companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
 
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment QuizFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String, param2: String): QuizFragment {
-            val fragment = QuizFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
-            return fragment
-        }
-    }
 }// Required empty public constructor

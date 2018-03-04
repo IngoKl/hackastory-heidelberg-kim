@@ -4,10 +4,20 @@ import android.content.Context
 import android.net.Uri
 import android.os.Bundle
 import android.support.v4.app.Fragment
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.android.volley.Request
+import com.android.volley.Response
+import com.android.volley.VolleyError
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
 import com.example.leonerath.kim.R
+import com.example.leonerath.kim.models.Article
+import com.google.gson.Gson
+import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.fragment_article_main.*
 
 
 /**
@@ -20,83 +30,59 @@ import com.example.leonerath.kim.R
  */
 class ArticleMainFragment : Fragment() {
 
-    // TODO: Rename and change types of parameters
-    private var mParam1: String? = null
-    private var mParam2: String? = null
 
-    private var mListener: OnFragmentInteractionListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (arguments != null) {
-            mParam1 = arguments.getString(ARG_PARAM1)
-            mParam2 = arguments.getString(ARG_PARAM2)
-        }
+
     }
 
     override fun onCreateView(inflater: LayoutInflater?, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        // Inflate the layout for this fragment
+
+        val id = arguments.getInt("id",0)
+
+        if (id != 0){
+            loadData(id)
+        }
+
+
         return inflater!!.inflate(R.layout.fragment_article_main, container, false)
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    fun onButtonPressed(uri: Uri) {
-        if (mListener != null) {
-            mListener!!.onFragmentInteraction(uri)
-        }
+
+    private fun loadData(id: Int) {
+        val gson = Gson()
+        // Instantiate the RequestQueue.
+        val queue = Volley.newRequestQueue(activity)
+        val url = "http://10.52.1.114:8080/api/article/"+id
+
+
+        val stringRequest = StringRequest(Request.Method.GET, url,
+                object : Response.Listener<String> {
+                    override fun onResponse(response: String) {
+                        Log.v("ArticleMainFragment",response)
+
+
+                        val article: Article = gson.fromJson(response, Article::class.java)
+                        showArticle(article)
+                    }
+                }, object : Response.ErrorListener {
+            override fun onErrorResponse(error: VolleyError) {
+                Log.v("MainActivity","Could not load Data")
+            }
+        })
+        queue.add(stringRequest)
     }
 
-    override fun onAttach(context: Context?) {
-        super.onAttach(context)
-        if (context is OnFragmentInteractionListener) {
-            mListener = context
-        } else {
-            throw RuntimeException(context!!.toString() + " must implement OnFragmentInteractionListener")
-        }
+    private fun showArticle(article: Article) {
+        textViewHeadline.text = article.headline
+        textViewStory.text = article.content.get(0).get(1)
+
+        val imageURL = article.content.get(1).get(1)
+
+        Log.v("ArticleMainFragment", imageURL)
+        Picasso.with(context).load(imageURL).into(imageView)
     }
 
-    override fun onDetach() {
-        super.onDetach()
-        mListener = null
-    }
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     *
-     *
-     * See the Android Training lesson [Communicating with Other Fragments](http://developer.android.com/training/basics/fragments/communicating.html) for more information.
-     */
-    interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
-        fun onFragmentInteraction(uri: Uri)
-    }
-
-    companion object {
-        // TODO: Rename parameter arguments, choose names that match
-        // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-        private val ARG_PARAM1 = "param1"
-        private val ARG_PARAM2 = "param2"
-
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ArticleMainFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        fun newInstance(param1: String, param2: String): ArticleMainFragment {
-            val fragment = ArticleMainFragment()
-            val args = Bundle()
-            args.putString(ARG_PARAM1, param1)
-            args.putString(ARG_PARAM2, param2)
-            fragment.arguments = args
-            return fragment
-        }
-    }
-}// Required empty public constructor
+}
