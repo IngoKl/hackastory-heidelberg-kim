@@ -7,8 +7,10 @@ from flask_admin.contrib.sqla import fields
 from flask_admin._compat import text_type
 from sqlalchemy.orm.util import identity_key
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'UdDs4haqPted9aP3gz6kfvHKpCwxe7AY' # Change!
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///test.db'
@@ -86,6 +88,8 @@ class Category(db.Model):
     name = db.Column(db.String)
     description = db.Column(db.String)
     article = db.relationship("Article", uselist=False, back_populates="category")
+    #information = db.relationship("Information", uselist=False, back_populates="category")
+
 
     def __str__(self):
         return self.name
@@ -93,7 +97,9 @@ class Category(db.Model):
 
 class Information(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String()) # Should be a 1-x thing
+    #category_id = db.Column(db.Integer, db.ForeignKey("category.id"))
+    #category = db.relationship("Category", uselist=False)
+    category = db.Column(db.String())
     timestamp = db.Column(db.BigInteger())
     headline = db.Column(db.String())
     content = db.Column(db.String()) # will become 1-x
@@ -207,7 +213,7 @@ def api_articles_all():
     for article in articles:
         articles_list.append({'id': article.id, 'headline': article.headline, 'content': content_to_list(article.content),
                     'category': article.category.name, 'timestamp': article.timestamp, 'background_information_id': article.background_information_id,
-                    'quiz_id': article.quiz_id, 'lat': article.lat, 'lng': article.lng})
+                    'quiz_id': article.quiz_id, 'lat': article.lat, 'lng': article.lng, 'abstract': article.abstract})
 
     return jsonify(articles_list)
 
@@ -237,8 +243,8 @@ def api_score(user_id):
 def api_article(article_id):
     article = Article.query.get(article_id)
     article_dict = {'id': article.id, 'headline': article.headline, 'content': content_to_list(article.content),
-                    'category': article.category_id, 'timestamp': article.timestamp, 'background_information_id': article.background_information_id,
-                    'quiz_id': article.quiz_id}
+                    'category': article.category.name, 'timestamp': article.timestamp, 'background_information_id': article.background_information_id,
+                    'quiz_id': article.quiz_id, 'abstract': article.abstract}
     return jsonify(article_dict)
 
 
@@ -256,9 +262,14 @@ def api_quiz(quiz_id):
     return jsonify(quiz_dict)
 
 
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
+
 if __name__ == '__main__':
     app.run(
         host='0.0.0.0',
         port=int('8080'),
-        debug=app.config['DEBUG']
+        debug=app.config['DEBUG'],
+        threaded=True
     )
