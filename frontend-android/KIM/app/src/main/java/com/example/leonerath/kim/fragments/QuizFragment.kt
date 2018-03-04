@@ -61,7 +61,7 @@ class QuizFragment : Fragment() {
                     button1.setBackgroundColor(Color.GREEN)
 
                     val intent = Intent(context, SolutionActivity::class.java).apply {
-                        putExtra("id", id)
+                        putExtra("id", quiz!!.id)
                         putExtra("score", wrong)
                     }
                     startActivity(intent)
@@ -81,7 +81,7 @@ class QuizFragment : Fragment() {
                     button2.setBackgroundColor(Color.GREEN)
 
                     val intent = Intent(context, SolutionActivity::class.java).apply {
-                        putExtra("id", id)
+                        putExtra("id", quiz!!.id)
                         putExtra("score", wrong)
                     }
                     startActivity(intent)
@@ -99,7 +99,7 @@ class QuizFragment : Fragment() {
                     button3.setBackgroundColor(Color.GREEN)
 
                     val intent = Intent(context, SolutionActivity::class.java).apply {
-                        putExtra("id", id)
+                        putExtra("id", quiz!!.id)
                         putExtra("score", wrong)
                     }
                     startActivity(intent)
@@ -117,7 +117,7 @@ class QuizFragment : Fragment() {
                     button4.setBackgroundColor(Color.GREEN)
 
                     val intent = Intent(context, SolutionActivity::class.java).apply {
-                        putExtra("id", id)
+                        putExtra("id", quiz!!.id)
                         putExtra("score", wrong)
                     }
                     startActivity(intent)
@@ -140,6 +140,9 @@ class QuizFragment : Fragment() {
     var quiz: Quiz ?= null
 
     lateinit var queue :RequestQueue
+
+
+
     private fun loadData(id: Int) {
 
 
